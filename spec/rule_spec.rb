@@ -2046,14 +2046,20 @@ describe RRule::Rule do
       end_time = Time.parse('Wed Aug 31 21:59:59 PDT 2016')
       expect(rule.between(start_time, end_time)).to eql([expected_instance])
     end
+
+    it 'returns the correct result with a blank RRULE' do
+      rrule = ''
+      dtstart = Time.parse('Tue Sep  2 06:00:00 PDT 1997')
+      timezone = 'America/New_York'
+
+      rrule = RRule::Rule.new(rrule, dtstart: dtstart, tzid: timezone)
+      expect(rrule.all).to match_array([dtstart])
+    end
   end
 
   describe 'validation' do
-    it 'raises RRule::InvalidRRule if FREQ is not provided' do
-      expect { RRule::Rule.new('') }.to raise_error(RRule::InvalidRRule)
-      expect { RRule::Rule.new('FREQ=') }.to raise_error(RRule::InvalidRRule)
+    it 'raises RRule::InvalidRRule if FREQ is not valid' do
       expect { RRule::Rule.new('FREQ=FOO') }.to raise_error(RRule::InvalidRRule)
-      expect { RRule::Rule.new('COUNT=1') }.to raise_error(RRule::InvalidRRule)
       expect { RRule::Rule.new('FREQ=FOO;COUNT=1') }.to raise_error(RRule::InvalidRRule)
     end
 

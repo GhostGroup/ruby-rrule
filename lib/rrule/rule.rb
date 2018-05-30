@@ -157,6 +157,11 @@ module RRule
         options[:byweekday], options[:bynweekday] = options[:byweekday].partition { |wday| wday.ordinal.nil? }
       end
 
+      if options[:freq].nil?
+        options[:freq] = 'DAILY'
+        options[:count] = 1
+      end
+
       options[:timeset] = [{ hour: dtstart.hour, minute: dtstart.min, second: dtstart.sec }]
 
       options
